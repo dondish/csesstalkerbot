@@ -24,14 +24,16 @@ async def fetch_page(session: aiohttp.ClientSession, i: int):
 
 
 def parse_page(text: str, i: int):
-    soup = BeautifulSoup(text, 'html.parser')
-    name = soup.h1.string[5:]
-    lastsub = datetime.strptime(soup.find(string='Last submission').parent.parent.contents[1].string, '%Y-%m-%d '
-                                                                                                      '%H:%M:%S')
-    s = soup.find(string='CSES Problem Set')
-    solved = int(s.parent.parent.contents[1].string if s is not None else '0')
-    return User({'name': name, 'id': i, 'lastsub': lastsub, 'solvedtasks': solved})
-
+    try:
+        soup = BeautifulSoup(text, 'html.parser')
+        name = soup.h1.string[5:]
+        lastsub = datetime.strptime(soup.find(string='Last submission').parent.parent.contents[1].string, '%Y-%m-%d '
+                                                                                                          '%H:%M:%S')
+        s = soup.find(string='CSES Problem Set')
+        solved = int(s.parent.parent.contents[1].string if s is not None else '0')
+        return User({'name': name, 'id': i, 'lastsub': lastsub, 'solvedtasks': solved})
+    except ValueError:
+        return None
 
 async def fetch_user(session: aiohttp.ClientSession, i: int):
     page = await fetch_page(session, i)
