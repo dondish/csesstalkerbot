@@ -35,15 +35,7 @@ def parse_page(text: str, i: int):
     except ValueError:
         return None
 
+
 async def fetch_user(session: aiohttp.ClientSession, i: int):
     page = await fetch_page(session, i)
     return parse_page(page, i)
-
-async def main():
-    async with aiohttp.ClientSession() as session:
-        p = await fetch_page(session, 9243)
-        print(parse_page(p, 9243))
-
-if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
