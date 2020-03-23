@@ -14,9 +14,7 @@ filelock = asyncio.locks.Lock()
 
 
 async def file_writer():
-    print('before lock')
     async with filelock:
-        print('after lock')
         with open('ids.txt', 'w') as f:
             f.write('\n'.join(str(x) for x in ids))
     return
@@ -54,7 +52,6 @@ async def parse_command(msg: discord.Message):
         if len(args) > 0:
             i = int(args[0])
             user = await fetcher.fetch_user(session, i)
-            print(user.name)
             embed = discord.Embed(title=f'CSES User: {user.name}', color=discord.Colour.blue()) \
                 .add_field(name='Last Submission', value=user.lastsub, inline=False) \
                 .add_field(name='Solved Tasks', value=user.solvedtasks, inline=False)
